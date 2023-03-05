@@ -47,3 +47,7 @@ MSX-BASIC では、コメントを記述する場合に REM と ' の好きな方を使うことが出来ます
 120 NEXT:PRINTTIME
 130 TIME=0:FORI=0TO10000:' COMMENT
 140 NEXT:PRINTTIME
+
+turboR 実行結果
+133
+154
