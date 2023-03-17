@@ -11,7 +11,7 @@
 #define IOT_PORT	8
 
 int iotget( const char *p_device_path ) {
-	int l;
+	int i, l;
 	unsigned char r[2];
 
 	l = strlen( p_device_path );
