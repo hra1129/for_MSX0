@@ -22,6 +22,7 @@ int iotget( const char *p_device_path ) {
 		outp( IOT_PORT, *p_device_path );
 		p_device_path++;
 	}
+	outp( IOT_PORT, 0xAB );
 	r[0] = inp(IOT_PORT);
 	r[1] = inp(IOT_PORT);
 	return *((int*) r );
