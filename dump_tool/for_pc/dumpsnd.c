@@ -48,6 +48,9 @@ void put_file_name( FILE *p_out, const char *p_in_name ) {
 		}
 	}
 	total_len = l;
+	if( l < 8 ) {
+		fputc( '.', p_out );
+	}
 	for( ; p_in_name[l] != '.' && p_in_name[l] != '\0'; l++ ) {
 	}
 	if( p_in_name[l] == '.' ) {
@@ -64,7 +67,7 @@ void put_file_name( FILE *p_out, const char *p_in_name ) {
 		}
 	}
 	total_len += l;
-	if( total_len < (8 + 3) ) {
+	if( l < 3 ) {
 		fputc( ':', p_out );
 	}
 }
@@ -96,6 +99,7 @@ void convert_file_image( const char *p_out_name, const char *p_in_name, int file
 			p++;
 		}
 	}
+	fputc( 'e', p_out );
 	fclose( p_out );
 }
 
