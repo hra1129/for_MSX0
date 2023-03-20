@@ -1,0 +1,2 @@
+cl dumpsnd.c
+pause
