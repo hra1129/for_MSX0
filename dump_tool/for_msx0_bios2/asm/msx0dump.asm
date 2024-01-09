@@ -8,6 +8,7 @@
 
 bdos		:= 0x0005
 rdslt		:= 0x000C
+enaslt		:= 0x0024
 
 ; BDOS function call
 _TERM0		:= 0x00
@@ -65,6 +66,7 @@ main::
 			ld		c, _STROUT
 			call	bdos
 
+			; MAIN-ROM
 			ld		de, s_main_rom
 			ld		c, _STROUT
 			call	bdos
@@ -96,6 +98,7 @@ main::
 			ld		bc, 0x4000
 			call	rom_dump
 
+			; SUB-ROM
 			ld		hl, s_sub_rom_file_name
 			ld		de, fcb
 			call	sub_fcreate
@@ -118,6 +121,7 @@ main::
 			ld		bc, 0x4000
 			call	rom_dump
 
+			; IoT-BASIC
 			ld		hl, s_iotbasic_rom_file_name
 			ld		de, fcb
 			call	sub_fcreate
@@ -140,6 +144,7 @@ main::
 			ld		bc, 0x4000
 			call	rom_dump
 
+			; MSXべーしっ君たーぼ
 			ld		hl, s_xbasic_rom_file_name
 			ld		de, fcb
 			call	sub_fcreate
@@ -153,6 +158,7 @@ main::
 			call	sub_fclose
 			call	put_crlf
 
+			; 漢字BASIC
 			ld		de, s_kanjibasic
 			ld		c, _STROUT
 			call	bdos
@@ -175,36 +181,187 @@ main::
 			call	sub_fclose
 			call	put_crlf
 
-;			ld		hl, s_kanjifont_rom_file_name
-;			ld		de, fcb
-;			call	sub_fcreate
-;			or		a, a
-;			call	nz, put_error
-;			ld		hl, 0
-;	loop_file_write:
-;			ld		de, buffer
-;	loop_block_transfer:
-;			push	hl
-;			ld		a, l
-;			and		a, 0x3F
-;			add		hl, hl
-;			add		hl, hl
-;			out		[0xD8], a
-;			ld		a, h
-;			and		a, 0x3F
-;			out		[0xD9], a
-;			pop		hl
-;			in		a, [0xD9]
-;			inc		hl
-;			
-;
-;			ld		hl, fcb
-;			call	sub_fclose
-;			call	put_crlf
+			ld		de, s_kanjifoont
+			ld		c, _STROUT
+			call	bdos
+
+			; 漢字ROM JIS1/JIS2
+			ld		hl, s_kanjifont_rom_file_name
+			ld		de, fcb
+			call	sub_fcreate
+			or		a, a
+			call	nz, put_error
+
+			ld		hl, 0
+			ld		b, 4
+	loop_file_write_jis1:
+			ld		de, buffer
+			push	bc
+			ld		bc, 1024
+	loop_block_transfer_jis1:
+			push	bc
+			push	hl
+			ld		a, l
+			and		a, 0x3F
+			add		hl, hl
+			add		hl, hl
+			out		[0xD8], a
+			ld		a, h
+			and		a, 0x3F
+			out		[0xD9], a
+			ld		b, 32
+	loop_font_jis1:
+			in		a, [0xD9]
+			ld		[de], a
+			inc		de
+			djnz	loop_font_jis1
+			pop		hl
+			inc		hl
+			pop		bc
+			dec		bc
+			ld		a, c
+			or		a, b
+			jr		nz, loop_block_transfer_jis1
+
+			push	hl
+			ld		hl, fcb
+			ld		de, buffer
+			ld		bc, 0x8000
+			call	sub_fwrite
+
+			ld		c, _CONOUT
+			ld		e, '*'
+			call	bdos
+
+			pop		hl
+			pop		bc
+			djnz	loop_file_write_jis1
+
+			ld		hl, 0
+			ld		b, 4
+	loop_file_write_jis2:
+			ld		de, buffer
+			push	bc
+			ld		bc, 1024
+	loop_block_transfer_jis2:
+			push	bc
+			push	hl
+			ld		a, l
+			and		a, 0x3F
+			add		hl, hl
+			add		hl, hl
+			out		[0xDA], a
+			ld		a, h
+			and		a, 0x3F
+			out		[0xDB], a
+			ld		b, 32
+	loop_font_jis2:
+			in		a, [0xDB]
+			ld		[de], a
+			inc		de
+			djnz	loop_font_jis2
+			pop		hl
+			inc		hl
+			pop		bc
+			dec		bc
+			ld		a, c
+			or		a, b
+			jr		nz, loop_block_transfer_jis2
+
+			push	hl
+			ld		hl, fcb
+			ld		de, buffer
+			ld		bc, 0x8000
+			call	sub_fwrite
+
+			ld		c, _CONOUT
+			ld		e, '*'
+			call	bdos
+
+			pop		hl
+			pop		bc
+			djnz	loop_file_write_jis2
+
+			ld		hl, fcb
+			call	sub_fclose
+			call	put_crlf
+
+			; MSX-DOS1
+			ld		de, s_dos1
+			ld		c, _STROUT
+			call	bdos
+			ld		a, 0x8F				; SLOT#3-3
+			ld		hl, 0x4000
+			ld		de, buffer
+			ld		bc, 0x8000
+			call	rom_dump
+
+			ld		hl, s_dos1_rom_file_name
+			ld		de, fcb
+			call	sub_fcreate
+			or		a, a
+			call	nz, put_error
+			ld		hl, fcb
+			ld		de, buffer
+			ld		bc, 0x4000
+			call	sub_fwrite
+			ld		hl, fcb
+			call	sub_fclose
+			call	put_crlf
+
+			; MSX-DOS2
+			ld		de, s_dos2
+			ld		c, _STROUT
+			call	bdos
+
+			ld		hl, s_dos2_rom_file_name
+			ld		de, fcb
+			call	sub_fcreate
+			or		a, a
+			call	nz, put_error
+
+			ld		a, 0
+			call	dos2_dump
+			ld		a, 1
+			call	dos2_dump
+			ld		a, 2
+			call	dos2_dump
+			ld		a, 3
+			call	dos2_dump
+
+			ld		hl, fcb
+			call	sub_fclose
+			call	put_crlf
 
 			ld		de, s_completed
 			ld		c, _STROUT
 			call	bdos
+			ret
+
+dos2_dump:
+			push	af
+			ld		a, 0x87				; SLOT#3-1
+			ld		h, 0x40
+			call	enaslt
+			pop		af
+
+			ld		[0x6000], a			; MegaROMバンク切り替え
+			ld		de, 0x8000
+			ld		hl, 0x4000
+			ld		bc, 0x4000
+			ldir
+
+			xor		a, a
+			ld		[0x6000], a			; MegaROMバンク切り替え
+
+			ld		a, [0xFCC1]			; SLOT#0-0
+			ld		h, 0x40
+			call	enaslt
+
+			ld		hl, fcb
+			ld		de, 0x8000
+			ld		bc, 0x4000
+			call	sub_fwrite
 			ret
 
 err_bad_file_name::
@@ -236,6 +393,10 @@ s_kanjibasic:
 			db		"KanjiBASIC:$"
 s_kanjifoont:
 			db		"KanjiROM  :$"
+s_dos1:
+			db		"MSXDOS1   :$"
+s_dos2:
+			db		"MSXDOS2   :$"
 s_fopen_error:
 			db		"fopen error.$"
 s_completed:
@@ -252,6 +413,10 @@ s_kanjidriver_rom_file_name:
 			db		11, "MSX0KDR.ROM"
 s_kanjifont_rom_file_name:
 			db		11, "MSX0KFN.ROM"
+s_dos1_rom_file_name:
+			db		11, "MSX0DOS.ROM"
+s_dos2_rom_file_name:
+			db		11, "MSX0DOS2.ROM"
 fcb:
 			space	37
 			endscope
