@@ -1,0 +1,152 @@
+<?xml version="1.0" ?>
+<!DOCTYPE msxconfig SYSTEM 'msxconfig2.dtd'>
+<msxconfig>
+
+  <info>
+    <manufacturer>IoT Media Laboratory</manufacturer>
+    <code>MSX0stack MSX2+ mode</code>
+    <release_year>2023</release_year>
+    <description>MSX-BASIC 3.0, IoT-BASIC, MSX-DOS, MSX-DOS2, KANJI-BASIC, BASIC'N</description>
+    <type>MSX2+</type>
+    <region>jp</region>
+  </info>
+
+  <MapperReadBackBits>largest</MapperReadBackBits>
+
+  <CassettePort/>
+
+  <devices>
+
+    <primary slot="0">
+
+      <secondary slot="0">
+        <ROM id="MSX BIOS with BASIC ROM">
+          <mem base="0x0000" size="0x8000"/>
+          <rom>
+            <filename>MSX0BIOS.ROM</filename>
+            <sha1>5f8cf3b01c5c8a91503949482024b94585bfd26d</sha1>
+          </rom>
+        </ROM>
+      </secondary>
+
+      <secondary slot="1">
+        <ROM id="MSX0 IoT BASIC">
+          <mem base="0x4000" size="0x4000"/>
+          <rom>
+            <filename>MSX0IOT.ROM</filename>
+            <sha1>36b7f53e5da0251cc59603fccd6479e90fc4c163</sha1>
+          </rom>
+        </ROM>
+      </secondary>
+
+      <secondary slot="2">
+        <ROM id="MSX BASIC'N turbo">
+          <mem base="0x4000" size="0x4000"/>
+          <rom>
+            <filename>MSX0XBAS.ROM</filename>
+            <sha1>ebd1f02fa4e5f165d756ab78864f882022ede844</sha1>
+          </rom>
+        </ROM>
+      </secondary>
+
+      <secondary slot="3">
+        <ROM id="SCC SOUND MODULE">
+          <mem base="0x4000" size="0x8000"/>
+          <sound>
+            <volume>11500</volume>
+          </sound>
+	      <rom/>
+          <mappertype>SCC</mappertype>
+        </ROM>
+      </secondary>
+
+    </primary>
+
+    <primary external="true" slot="1"/>
+
+    <primary external="true" slot="2"/>
+
+    <primary slot="3">
+
+      <secondary slot="0">
+        <MemoryMapper id="Main RAM">
+          <mem base="0x0000" size="0x10000"/>
+          <size>1024</size>
+        </MemoryMapper>
+      </secondary>
+
+      <secondary slot="2">
+        <ROM id="MSX Sub ROM">
+          <mem base="0x0000" size="0x4000"/>
+          <rom>
+            <filename>MSX0EXT.ROM</filename>
+            <sha1>17d5112666450faaeba85e1055a6504d4804ea01</sha1>
+          </rom>
+        </ROM>
+
+        <ROM id="MSX Kanji Driver with BASIC">
+          <mem base="0x4000" size="0x8000"/>
+          <rom>
+            <filename>MSX0KDR.ROM</filename>
+            <sha1>dcc3a67732aa01c4f2ee8d1ad886444a4dbafe06</sha1>
+          </rom>
+        </ROM>
+      </secondary>
+    </primary>
+
+    <Kanji id="Kanji ROM">
+      <io base="0xD8" num="4"/>
+      <rom>
+        <sha1>5aff2d9b6efc723bc395b0f96f0adfa83cc54a49</sha1>
+        <filename>MSX0KFN.ROM</filename>
+      </rom>
+    </Kanji>
+
+    <T9769 id="T9769">
+      <subtype>C</subtype>
+    </T9769>
+
+    <PPI id="ppi">
+      <io base="0xA8" num="4"/>
+      <sound>
+        <volume>16000</volume>
+      </sound>
+      <keyboard_type>jp_jis</keyboard_type>
+      <has_keypad>true</has_keypad>
+      <has_yesno_keys>true</has_yesno_keys>
+      <key_ghosting_sgc_protected>false</key_ghosting_sgc_protected>
+      <code_kana_locks>true</code_kana_locks>
+      <graph_locks>false</graph_locks>
+    </PPI>
+
+    <VDP id="VDP">
+      <io base="0x98" num="4" type="O"/> <!-- No mirroring of VDP ports -->
+      <io base="0x98" num="2" type="I"/>
+      <version>V9958</version>
+      <vram>128</vram>
+    </VDP>
+
+    <PSG id="PSG">
+      <io base="0xA0" num="4" type="IO"/>
+      <sound>
+        <volume>21000</volume>
+      </sound>
+      <keyboardlayout>JIS</keyboardlayout>
+      <mirrored_registers>false</mirrored_registers>
+      <ignorePortDirections>true</ignorePortDirections> <!-- not sure, but guess based on use of Engine IC -->
+    </PSG>
+
+    <RTC id="Real time clock">
+      <io base="0xB4" num="2" type="O"/>
+      <io base="0xB5" num="1" type="I"/>
+      <sramname>MSX0.CMOS</sramname>
+    </RTC>
+
+    <ResetStatusRegister id="Reset Status register">
+      <io base="0xF4" num="1"/>
+      <inverted>true</inverted>
+    </ResetStatusRegister>
+
+  </devices>
+
+</msxconfig>
